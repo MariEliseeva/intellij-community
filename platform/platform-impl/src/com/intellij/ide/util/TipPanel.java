@@ -41,10 +41,12 @@ public class TipPanel extends JPanel implements DoNotAskOption {
   private final JLabel myPoweredByLabel;
   final AbstractAction myPreviousTipAction;
   final AbstractAction myNextTipAction;
+  final AbstractAction myLikedTipAction;
   private @NotNull String myAlgorithm = "unknown";
   private @Nullable String myAlgorithmVersion = null;
   private List<TipAndTrickBean> myTips = Collections.emptyList();
   private final List<String> mySeenIds = new ArrayList<>();
+  private final List<String> myLikedIds = new ArrayList<>();
   private TipAndTrickBean myCurrentTip = null;
 
   public TipPanel() {
@@ -66,6 +68,7 @@ public class TipPanel extends JPanel implements DoNotAskOption {
 
     myPreviousTipAction = new PreviousTipAction();
     myNextTipAction = new NextTipAction();
+    myLikedTipAction = new LikedTipAction();
 
     mySeenIds.addAll(StringUtil.split(PropertiesComponent.getInstance().getValue(SEEN_TIPS, ""), ","));
     Collections.shuffle(mySeenIds);
@@ -135,6 +138,8 @@ public class TipPanel extends JPanel implements DoNotAskOption {
 
     myPreviousTipAction.setEnabled(myTips.indexOf(myCurrentTip) > 0);
     myNextTipAction.setEnabled(myTips.indexOf(myCurrentTip) < myTips.size() - 1);
+
+    myLikedTipAction.setEnabled(!myLikedIds.contains(myCurrentTip.fileName));
   }
 
   @Override
@@ -186,6 +191,18 @@ public class TipPanel extends JPanel implements DoNotAskOption {
     public void actionPerformed(ActionEvent e) {
       TipsOfTheDayUsagesCollector.NEXT_TIP.log();
       showNext(true);
+    }
+  }
+
+  private class LikedTipAction extends AbstractAction {
+    LikedTipAction() {
+      super(IdeBundle.message("action.like.tip"));
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      TipsOfTheDayUsagesCollector.triggerTipLiked(myCurrentTip, myAlgorithm, myAlgorithmVersion);
+      myLikedTipAction.setEnabled(false);
+      myLikedIds.add(myCurrentTip.fileName);
     }
   }
 }

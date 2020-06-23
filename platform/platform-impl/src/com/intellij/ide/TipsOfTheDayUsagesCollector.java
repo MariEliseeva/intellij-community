@@ -28,6 +28,12 @@ public class TipsOfTheDayUsagesCollector extends CounterUsagesCollector {
                         EventFields.String("algorithm").withCustomEnum("tips_order_algorithm"),
                         EventFields.Version);
 
+  private static final EventId3<String, String, String> TIP_LIKED =
+    GROUP.registerEvent("tip.liked",
+                        EventFields.String("filename").withCustomRule("tip_info"),
+                        EventFields.String("algorithm").withCustomEnum("tips_order_algorithm"),
+                        EventFields.Version);
+
   @Override
   public EventLogGroup getGroup() {
     return GROUP;
@@ -35,6 +41,10 @@ public class TipsOfTheDayUsagesCollector extends CounterUsagesCollector {
 
   public static void triggerTipShown(@NotNull TipAndTrickBean tip, @NotNull String algorithm, @Nullable String version) {
     TIP_SHOWN.log(tip.fileName, algorithm, version);
+  }
+
+  public static void triggerTipLiked(@NotNull TipAndTrickBean tip, @NotNull String algorithm, @Nullable String version) {
+    TIP_LIKED.log(tip.fileName, algorithm, version);
   }
 
   public static class TipInfoWhiteListRule extends CustomWhiteListRule {

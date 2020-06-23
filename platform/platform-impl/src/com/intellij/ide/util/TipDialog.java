@@ -58,9 +58,9 @@ public final class TipDialog extends DialogWrapper {
   @Override
   protected Action @NotNull [] createActions() {
     if (ApplicationManager.getApplication().isInternal()) {
-      return new Action[]{new OpenTipsAction(), myTipPanel.myPreviousTipAction, myTipPanel.myNextTipAction, getCancelAction()};
+      return new Action[]{new OpenTipsAction(), myTipPanel.myPreviousTipAction, myTipPanel.myNextTipAction, getCancelAction(), myTipPanel.myLikedTipAction};
     }
-    return new Action[]{myTipPanel.myPreviousTipAction, myTipPanel.myNextTipAction, getCancelAction()};
+    return new Action[]{myTipPanel.myPreviousTipAction, myTipPanel.myNextTipAction, getCancelAction(), myTipPanel.myLikedTipAction};
   }
 
   @Override
